@@ -3,7 +3,16 @@ from flask_cors import CORS
 import yfinance as yf
 
 app = Flask(__name__)
-CORS(app)
+
+# Allow ALL origins explicitly — fixes Claude.ai browser requests
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=False)
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,OPTIONS')
+    return response
 
 @app.route('/')
 def home():
